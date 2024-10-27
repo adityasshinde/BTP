@@ -66,9 +66,8 @@ def monitor_process(pid, duration=30):
     
     return activities
 
-def run_dynamic_analysis(file_path):
+def run_dynamic_analysis(file_path,sandbox_name,output_path):
     print("[INFO] Running dynamic analysis")
-    output_path = os.path.join("result", "dynamic", "dynamic_report.json")
     
     try:
         # Ensure the directory exists

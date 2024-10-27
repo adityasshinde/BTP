@@ -77,11 +77,9 @@ def analyze_pe(file_path):
     except Exception as e:
         return {'error': str(e)}
 
-def run_static_analysis(file_path):
+def run_static_analysis(file_path,output_path):
     print("[INFO] Running static analysis")
-    
-    output_path = os.path.join("result", "static", "static_report.json")
-    
+        
     try:
         # Gather all analysis results
         analysis_results = {
