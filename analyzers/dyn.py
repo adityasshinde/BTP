@@ -9,7 +9,7 @@ import socket
 from collections import defaultdict
 
 class DynamicAnalyzer:
-    def __init__(self, file_path, analysis_time=120):
+    def __init__(self, file_path, analysis_time=10):
         self.file_path = file_path
         self.analysis_time = analysis_time
         self.report = defaultdict(dict)
@@ -158,7 +158,7 @@ class DynamicAnalyzer:
 
 def run_dynamic_analysis2(file_path,sandbox_name,output_path):
     # Configuration
-    analysis_time = 120 
+    analysis_time = 10 
     
     # Create analyzer instance
     analyzer = DynamicAnalyzer(file_path, analysis_time)

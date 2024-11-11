@@ -2,9 +2,9 @@ import time
 import os
 import logging
 from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileCreatedEvent
-from core.sandbox_manager import create_sandbox, move_to_sandbox
-from analyzers.static_analyzer import run_static_analysis
+from watchdog.events import FileSystemEventHandler
+from core.sandbox_manager import create_sandbox, move_to_sandbox, discard_file
+from analyzers.static.static_analysis_master import run_static_analysis
 from analyzers.dynamic_analyzer import run_dynamic_analysis
 from analyzers.dyn import run_dynamic_analysis2
 
@@ -35,13 +35,23 @@ class DownloadHandler():
             self._wait_for_file_completion(file_path)
 
             # Process the file
-            self._process_executable(file_path)
-
+            sandboxed_file=self._process_executable(file_path)
+            
+            #To be implemented
+            # ML classification model to determine if the file is benign or malicious
+            
+            # if sandboxed_file: # If the file is benign
+            #     # Move the file to the Downloads folder
+            #     move_to_downloads(sandboxed_file)
+            # else:    
+            #     discard_file(file_path)
+            
+            
         except Exception as e:
             logging.error(f"Error processing file {event.src_path}: {str(e)}")
-        finally:
-            if event.src_path in self.processing_files:
-                self.processing_files.remove(event.src_path)
+        # finally:
+        #     if event.src_path in self.processing_files:
+        #         self.processing_files.remove(event.src_path)
 
     def _wait_for_file_completion(self, file_path, timeout=5, check_interval=1):
         """Wait for the file to be completely downloaded."""
@@ -85,9 +95,10 @@ class DownloadHandler():
             
             run_static_analysis(sandboxed_file, output_path=static_report)
             #run_dynamic_analysis(sandboxed_file, sandbox_name, output_path=dynamic_report)
-            run_dynamic_analysis2(sandboxed_file, sandbox_name, output_path=dynamic_report)
+            #run_dynamic_analysis2(sandboxed_file, sandbox_name, output_path=dynamic_report)
             
             logging.info(f"Analysis completed. Reports saved in {result_dir}")
+            return sandboxed_file
 
         except Exception as e:
             logging.error(f"Error processing executable {file_path}: {str(e)}")
@@ -134,3 +145,22 @@ def monitor_downloads():
     except Exception as e:
         logging.error(f"Failed to start download monitor: {str(e)}")
         raise
+    
+def move_to_downloads(file_path):
+    """Move the file to the Downloads folder."""
+    try:
+        if not os.path.exists(DOWNLOADS_FOLDER):
+            os.makedirs(DOWNLOADS_FOLDER, exist_ok=True)
+        
+        # Get the filename
+        filename = os.path.basename(file_path)
+        dest_path = os.path.join(DOWNLOADS_FOLDER, filename)
+        
+        # Move the file
+        os.replace(file_path, dest_path)
+        logging.info(f"File moved to Downloads folder: {dest_path}")
+        return dest_path
+    
+    except Exception as e:
+        logging.error(f"Error moving file to Downloads folder: {str(e)}")
+        return None

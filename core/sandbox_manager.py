@@ -86,3 +86,7 @@ def move_to_sandbox(filepath):
     print(sandbox_filepath)
     shutil.move(filepath, sandbox_filepath)
     return sandbox_filepath
+
+def discard_file(filepath):
+    print("[INFO] Discarding file...")
+    os.remove(filepath)
