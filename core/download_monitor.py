@@ -5,8 +5,9 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from core.sandbox_manager import create_sandbox, move_to_sandbox, discard_file
 from analyzers.static.static_analysis_master import run_static_analysis
-from analyzers.dynamic_analyzer import run_dynamic_analysis
-from analyzers.dyn import run_dynamic_analysis2
+from analyzers.dynamic.dynamic_analysis_master import run_dynamic_analysis
+# from analyzers.dynamic_analyzer import run_dynamic_analysis
+# from analyzers.dyn import run_dynamic_analysis2
 
 # Get the Downloads folder path dynamically
 DOWNLOADS_FOLDER = os.path.join(os.path.expanduser('~'), 'Downloads')
@@ -85,7 +86,8 @@ class DownloadHandler():
             os.makedirs(os.path.join(result_dir, "dynamic"), exist_ok=True)
 
             # Step 1: Create sandbox and move file
-            sandbox_name = create_sandbox()
+            #sandbox_name = create_sandbox()
+            sandbox_name = "DefaultBox"
             sandboxed_file = move_to_sandbox(file_path)
             logging.info(f"File moved to sandbox: {sandboxed_file}")
             
@@ -94,8 +96,10 @@ class DownloadHandler():
             dynamic_report = os.path.join(result_dir, "dynamic", "dynamic_report.json")
             
             run_static_analysis(sandboxed_file, output_path=static_report)
+            # run_dynamic_analysis(sandboxed_file,sandbox_name, output_path=dynamic_report)
+            
+            
             #run_dynamic_analysis(sandboxed_file, sandbox_name, output_path=dynamic_report)
-            #run_dynamic_analysis2(sandboxed_file, sandbox_name, output_path=dynamic_report)
             
             logging.info(f"Analysis completed. Reports saved in {result_dir}")
             return sandboxed_file

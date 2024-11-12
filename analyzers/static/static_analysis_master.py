@@ -12,15 +12,15 @@ from analyzers.static.scripts.stylometry import analyze_stylometry
 
 # Mapping of script paths to their corresponding functions
 SCRIPT_FUNCTIONS = {
-    "scripts/decompilation.py": decompile,
-    "scripts/extract_functions.py": extract_function_names,
-    "scripts/similarity_testing.py": similarity_test,
-    "scripts/register_analysis.py": analyze_registers,
-    "scripts/binary_features.py": extract_binary_features,
-    "scripts/subroutine_detection.py": detect_subroutines,
-    "scripts/statistics.py": collect_statistics,
-    "scripts/file_relations.py": analyze_file_relations,
-    "scripts/stylometry.py": analyze_stylometry,
+    "scripts/decompilation.py": decompile, #reverse engineering
+    "scripts/extract_functions.py": extract_function_names,#reverse engineering
+    "scripts/similarity_testing.py": similarity_test, #static analysis
+    "scripts/register_analysis.py": analyze_registers, #static analysis
+    "scripts/binary_features.py": extract_binary_features,#reverse engineering
+    "scripts/subroutine_detection.py": detect_subroutines, #static analysis
+    "scripts/statistics.py": collect_statistics,#reverse engineering
+    "scripts/file_relations.py": analyze_file_relations,#analysis
+    "scripts/stylometry.py": analyze_stylometry,#analysis
 }
 
 def run_script(script_name, binary_path, results_dict):
@@ -46,7 +46,7 @@ def run_static_analysis(binary_path, output_path):
     
     # List of script paths to run
     scripts = list(SCRIPT_FUNCTIONS.keys())
-
+    
     for script in scripts:
         run_script(script, binary_path, results)
 

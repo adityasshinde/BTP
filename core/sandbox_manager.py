@@ -22,7 +22,7 @@ def list_sandboxes_with_start(sbiectrl_exe, sandbox_name):
         return None
 
 def create_sandbox():
-    sandbox_name = f"Malware Analysis"  # Using the desired sandbox name with spaces
+    sandbox_name = f"DefaultBox"  # Using the desired sandbox name with spaces
     print(f"[INFO] Creating sandbox: {sandbox_name}")
 
     try:
@@ -81,7 +81,7 @@ def create_sandbox():
 def move_to_sandbox(filepath):
     print("[INFO] Moving file to sandbox...")
     SANDBOX_PATH = "C:\\Sandbox\\sadit"
-    SANDBOX_NAME = "Malware_Analysis"
+    SANDBOX_NAME = "DefaultBox"
     sandbox_filepath = os.path.join(SANDBOX_PATH, SANDBOX_NAME, "files", os.path.basename(filepath))
     print(sandbox_filepath)
     shutil.move(filepath, sandbox_filepath)
