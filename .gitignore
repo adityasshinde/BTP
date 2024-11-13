@@ -21,3 +21,4 @@ logs/
 models/*.pkl
 config/local_settings.json
 sandbox_data/
+analyzers/static/scripts/apikey.txt
