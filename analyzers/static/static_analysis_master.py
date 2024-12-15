@@ -1,7 +1,7 @@
 import os
 import json
 from analyzers.static.scripts.binary_features import extract_binary_features
-from analyzers.static.scripts.decompilation import decompile
+from analyzers.static.scripts.disassemble import decompile
 from analyzers.static.scripts.extract_functions import extract_function_names
 from analyzers.static.scripts.similarity_testing import similarity_test
 from analyzers.static.scripts.register_analysis import analyze_registers
