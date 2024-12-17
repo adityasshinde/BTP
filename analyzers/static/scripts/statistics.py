@@ -4,8 +4,8 @@ import sys
 
 def collect_statistics(binary_path):
     r2 = r2pipe.open(binary_path)
-    r2.cmd("aaa")  # Analyze all
-    instructions = r2.cmd("pd 1000")  # Disassemble the first 100 bytes
+    r2.cmd("aa")  # Analyze all
+    instructions = r2.cmd("pdr 100")  # Disassemble the first 100 bytes
     instruction_count = {}
 
     for line in instructions.splitlines():

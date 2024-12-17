@@ -62,21 +62,16 @@ def compare_with_known_hashes(code_hash):
         return match
 
 
-def main():
-    if len(sys.argv) < 2:
-        print("Usage: python similarity_testing.py <binary_path>")
-        sys.exit(1)
+def similarity_test(binary_path):
 
-    binary_path = sys.argv[1]
     code_hash = hash_code(binary_path)
     match = compare_with_known_hashes(code_hash)
+    
 
     print("Similarity Testing Result:")
     print(f"Code Hash: {code_hash}")
     print(f"Match: {match}")
 
     print("Termination: similarity_testing.py script completed successfully.")
+    return {code_hash,match}
 
-
-if __name__ == "__main__":
-    main()

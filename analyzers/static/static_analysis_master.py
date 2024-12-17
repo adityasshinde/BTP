@@ -1,7 +1,7 @@
 import os
 import json
 from analyzers.static.scripts.binary_features import extract_binary_features
-from analyzers.static.scripts.disassemble import decompile
+from analyzers.static.scripts.disassemble import disassemble
 from analyzers.static.scripts.extract_functions import extract_function_names
 from analyzers.static.scripts.similarity_testing import similarity_test
 from analyzers.static.scripts.register_analysis import analyze_registers
@@ -12,7 +12,7 @@ from analyzers.static.scripts.stylometry import analyze_stylometry
 
 # Mapping of script paths to their corresponding functions
 SCRIPT_FUNCTIONS = {
-    "scripts/decompilation.py": decompile, #reverse engineering
+    "scripts/disassemble.py": disassemble, #reverse engineering
     "scripts/extract_functions.py": extract_function_names,#reverse engineering
     "scripts/similarity_testing.py": similarity_test, #static analysis
     "scripts/register_analysis.py": analyze_registers, #static analysis

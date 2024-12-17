@@ -27,6 +27,7 @@ class DownloadHandler():
 
             # Check if it's a file and ends with .exe
             if not os.path.isfile(file_path) or not file_path.lower().endswith('.exe'):
+                print(f"File {file_path} is not an executable. Skipping...")
                 return
 
             self.processing_files.add(file_path)
@@ -86,8 +87,7 @@ class DownloadHandler():
             os.makedirs(os.path.join(result_dir, "dynamic"), exist_ok=True)
 
             # Step 1: Create sandbox and move file
-            #sandbox_name = create_sandbox()
-            sandbox_name = "DefaultBox"
+            sandbox_name = create_sandbox()
             sandboxed_file = move_to_sandbox(file_path)
             logging.info(f"File moved to sandbox: {sandboxed_file}")
             
