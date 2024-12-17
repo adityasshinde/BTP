@@ -1,0 +1,8 @@
+volatility3 
+frida 
+scapy 
+yara-python 
+capstone 
+impacket
+pydbg
+requests
