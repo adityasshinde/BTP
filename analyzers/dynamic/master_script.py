@@ -1,19 +1,28 @@
-from src.analysis.obfuscated_code_synthesis import synthesize_semantics
-from src.analysis.multi_hypothesis_testing import multi_hypothesis_testing
-from src.analysis.dfg_metrics_analysis import analyze_dfg_metrics
-from src.analysis.api_call_graph import simplified_api_call_graph
-from src.analysis.downloader_graph_analysis import downloader_graph_analysis
-from src.analysis.access_behavior import monitor_access_behavior
-from src.analysis.initial_behavior_apis import api_initial_behavior
-from src.analysis.log_crowdsourcing import log_based_crowdsourcing
 import os
+import json
+import subprocess
+
+
+def run_script(script_name, binary_path, results_dict):
+    try:
+        # Run the script and capture its output
+        result = subprocess.run(
+            ["python", script_name, binary_path], capture_output=True, text=True
+        )
+
+        # Append the result (stdout) to the results dictionary
+        results_dict[script_name] = result.stdout.strip()
+        print(f"Successfully ran {script_name}")
+    except Exception as e:
+        print(f"Error while running {script_name}: {str(e)}")
+        results_dict[script_name] = str(e)
 
 
 def main():
     print("Starting malware analysis pipeline...\n")
 
     # Prompt user for binary path
-    binary_path = input("Enter the path to the binary file for analysis: ").strip()
+    binary_path = os.path.join(os.getcwd(), "DroidCam.exe")
 
     # Validate the provided binary path
     if not os.path.isfile(binary_path):
@@ -22,19 +31,33 @@ def main():
 
     print(f"Binary path provided: {binary_path}\n")
 
-    # Provide the binary path to the relevant function
-    synthesize_semantics(binary_path)
-    multi_hypothesis_testing({"hypothesis1": [0.4, 0.5, 0.6]})
-    analyze_dfg_metrics({"nodes": [1, 2, 3], "edges": [(1, 2), (2, 3)]})
-    simplified_api_call_graph(
-        {"nodes": ["A", "B", "A"], "edges": [("A", "B"), ("B", "A")]}
-    )
-    downloader_graph_analysis({"nodes": ["clean_node", "suspicious_node"], "edges": []})
-    monitor_access_behavior([{"status": "failed"}, {"status": "success"}])
-    api_initial_behavior(["critical_function", "non_critical_function"])
-    log_based_crowdsourcing([{"id": 1, "votes": 10}, {"id": 2, "votes": 5}])
+    # Define the result storage
+    results = {}
+
+    # List of scripts to run
+    scripts = [
+        "src/analysis/obfuscated_code_synthesis.py",
+        "src/analysis/multi_hypothesis_testing.py",
+        "src/analysis/dfg_metrics_analysis.py",
+        "src/analysis/api_call_graph.py",
+        "src/analysis/downloader_graph_analysis.py",
+        "src/analysis/access_behavior.py",
+        "src/analysis/initial_behavior_apis.py",
+        "src/analysis/log_crowdsourcing.py",
+    ]
+
+    # Run all scripts and capture the output
+    for script in scripts:
+        run_script(script, binary_path, results)
+
+    # Save all results to a JSON file
+    results_file = os.path.join(os.getcwd(), "results", "analysis_results.json")
+    os.makedirs(os.path.dirname(results_file), exist_ok=True)
+    with open(results_file, "w") as json_file:
+        json.dump(results, json_file, indent=4)
 
     print("\nMalware analysis pipeline completed.")
+    print(f"Results saved to {results_file}")
 
 
 if __name__ == "__main__":
