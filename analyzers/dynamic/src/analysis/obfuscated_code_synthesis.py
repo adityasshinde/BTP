@@ -25,24 +25,32 @@ def compute_file_hashes(file_path):
 def extract_yara_match_details(matches):
     """
     Extract detailed information from YARA matches.
+    Now we handle cases where matches might just be rule names.
     """
     match_details = []
-    for match in matches:
-        match_info = {
-            "rule": match.rule,
-            "namespace": match.namespace,
-            "tags": match.tags,
-            "meta": match.meta,
-            "strings": [
-                {
-                    "offset": offset,
-                    "data": data.decode(errors="replace"),
-                    "identifier": identifier,
-                }
-                for offset, identifier, data in match.strings
-            ],
-        }
-        match_details.append(match_info)
+
+    if isinstance(matches, list):  # Ensure we are processing a list of matches
+        for match in matches:
+            match_info = {
+                "rule": match,  # Directly use the match as the rule name
+                "namespace": "N/A",  # No namespace available
+                "tags": [],  # Tags not available
+                "meta": {},  # Meta not available
+                "strings": [],  # No strings to process
+            }
+            match_details.append(match_info)
+    else:
+        # If a single match is returned
+        match_details.append(
+            {
+                "rule": matches,  # Use the match as the rule name
+                "namespace": "N/A",  # No namespace available
+                "tags": [],
+                "meta": {},
+                "strings": [],
+            }
+        )
+
     return match_details
 
 
@@ -132,17 +140,42 @@ def synthesize_semantics(file_path):
 
         # Step 5: Match YARA rules against the file
         matches = rules.match(file_path)
-        results["matches"] = extract_yara_match_details(matches)
-        print(f"YARA matches: {results['matches']}")
 
-        # Step 6: Update status
+        # Ensure that matches are always in a list format (even if it's a single match)
+        if isinstance(matches, yara.StringMatch):
+            matches = [matches]  # Convert single match to a list
+        elif not isinstance(matches, list):
+            matches = (
+                []
+            )  # Ensure matches is an empty list if not a list or StringMatch object
+
+        # Debug print for number of matches
+        print(f"Total matches found: {len(matches)}")
+
+        # Process matches with a limit
+        if len(matches) > 50:
+            print("Warning: Too many matches found. Limiting to the first 50.")
+
+        # Step 6: Extract match details and update results
+        results["matches"] = extract_yara_match_details(
+            matches[:50]  # Limiting to first 50 matches
+        )
+        # print(results)
+        # print(f"YARA matches: {results['matches']}")
+
+        # Step 7: Update status
         results["status"] = "completed"
+
     except yara.Error as ye:
         results["error"] = f"YARA error: {str(ye)}"
+        results["status"] = "failed"
+    except FileNotFoundError as fnf:
+        results["error"] = str(fnf)
         results["status"] = "failed"
     except Exception as e:
         results["error"] = str(e)
         results["status"] = "failed"
+
     return results
 
 
