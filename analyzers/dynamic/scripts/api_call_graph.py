@@ -110,20 +110,3 @@ def detailed_api_call_graph(file_path):
 
     return results
 
-
-def main():
-    # Input binary path
-    binary_file_path = "DroidCam.exe"  # Replace with your file path
-
-    # Run the analysis
-    results = detailed_api_call_graph(binary_file_path)
-
-    # Print results summary
-    if results["status"] == "completed":
-        print(json.dumps(results, indent=4))
-    else:
-        print(f"An error occurred: {results['error']}")
-
-
-if __name__ == "__main__":
-    main()

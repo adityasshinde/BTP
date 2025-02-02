@@ -204,8 +204,3 @@ def multi_hypothesis_testing(file_path):
 
     return results
 
-
-# Example usage
-binary_path = "DroidCam.exe"
-analysis_results = multi_hypothesis_testing(binary_path)
-print(analysis_results)

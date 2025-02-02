@@ -3,6 +3,11 @@ import logging
 import time
 import psutil
 import tracemalloc
+import os
+
+# Set the path to your service account JSON key
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "./core/valid-octagon-448315-b4-377ff0af2a2b.json"
+
 
 def measure_performance():
     # Start the timer and tracemalloc for memory tracking

@@ -149,9 +149,3 @@ def analyze_dfg_metrics(file_path):
         results["status"] = "failed"
 
     return results
-
-
-# Example usage
-binary_path = "DroidCam.exe"
-dfg_results = analyze_dfg_metrics(binary_path)
-print(json.dumps(dfg_results, indent=4))

@@ -6,6 +6,8 @@ from watchdog.events import FileSystemEventHandler
 from core.sandbox_manager import create_sandbox, move_to_sandbox, discard_file
 from analyzers.static.static_analysis_master import run_static_analysis
 from analyzers.dynamic.dynamic_analysis_master import run_dynamic_analysis
+from utils import process_reports
+from core.model_manager import analyze_with_llm
 # from analyzers.dynamic_analyzer import run_dynamic_analysis
 # from analyzers.dyn import run_dynamic_analysis2
 
@@ -92,14 +94,23 @@ class DownloadHandler():
             logging.info(f"File moved to sandbox: {sandboxed_file}")
             
             # Step 2: Run analyses
-            static_report = os.path.join(result_dir, "static", "static_report.json")
-            dynamic_report = os.path.join(result_dir, "dynamic", "dynamic_report.json")
+            static_report_path = os.path.join(result_dir, "static", "static_report.json")
+            dynamic_report_path = os.path.join(result_dir, "dynamic", "dynamic_report.json")
             
-            run_static_analysis(sandboxed_file, output_path=static_report)
-            # run_dynamic_analysis(sandboxed_file,sandbox_name, output_path=dynamic_report)
-            
-            
-            #run_dynamic_analysis(sandboxed_file, sandbox_name, output_path=dynamic_report)
+            run_static_analysis(sandboxed_file, output_path=static_report_path)
+            run_dynamic_analysis(sandboxed_file, output_path=dynamic_report_path)
+                                    
+            # optimized_features  p=rocess_reports(static_report,dynamic_report)
+            # Read the JSON files
+            with open(static_report_path, 'r') as static_file:
+                static_report = static_file.read()
+
+            with open(dynamic_report_path, 'r') as dynamic_file:
+                dynamic_report = dynamic_file.read()
+
+            # Pass the contents to the function
+            # final_result = analyze_with_llm(static_report, dynamic_report)
+            # print(final_result)
             
             logging.info(f"Analysis completed. Reports saved in {result_dir}")
             return sandboxed_file

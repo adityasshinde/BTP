@@ -179,48 +179,11 @@ def synthesize_semantics(file_path):
     return results
 
 
-def main():
-    """
-    Main function to analyze a specific binary file using YARA rules.
-    """
-    # Hardcoded binary file path
-    file_path = "DroidCam.exe"
-
-    print(f"Starting analysis for file: {file_path}")
-
+def obfuscated_code_synthesis(file_path):
     try:
         # Run the YARA analysis
         results = synthesize_semantics(file_path)
-
-        # Display results
-        if results["status"] == "completed":
-            print("\n--- Analysis Completed ---")
-            print("File Hashes:")
-            for hash_type, hash_value in results["file_hashes"].items():
-                print(f"{hash_type.upper()}: {hash_value}")
-
-            print("\nYARA Matches:")
-            if results["matches"]:
-                for match in results["matches"]:
-                    print(f"\nRule: {match['rule']}")
-                    print(f"Namespace: {match['namespace']}")
-                    print(f"Tags: {', '.join(match['tags'])}")
-                    print(f"Meta: {match['meta']}")
-                    print("Strings:")
-                    for string in match["strings"]:
-                        print(
-                            f"  Offset: {string['offset']}, "
-                            f"Identifier: {string['identifier']}, "
-                            f"Data: {string['data']}"
-                        )
-            else:
-                print("No matches found.")
-        else:
-            print("\n--- Analysis Failed ---")
-            print(f"Error: {results.get('error', 'Unknown error')}")
+        return results
     except Exception as e:
         print(f"An error occurred during analysis: {e}")
 
-
-if __name__ == "__main__":
-    main()

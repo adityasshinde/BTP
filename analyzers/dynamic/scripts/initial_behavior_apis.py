@@ -138,21 +138,3 @@ def api_initial_behavior(file_path):
         results["status"] = "failed"
 
     return results
-
-
-def main():
-    # Input binary path
-    binary_file_path = "DroidCam.exe"  # Replace with your actual file path
-
-    # Run the analysis
-    results = api_initial_behavior(binary_file_path)
-
-    # Print results summary
-    if results["status"] == "completed":
-        print(json.dumps(results, indent=4))
-    else:
-        print(f"An error occurred: {results['error']}")
-
-
-if __name__ == "__main__":
-    main()
