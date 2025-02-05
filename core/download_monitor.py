@@ -1,6 +1,7 @@
 import time
 import os
 import logging
+import threading
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from core.sandbox_manager import create_sandbox, move_to_sandbox, discard_file
@@ -39,7 +40,7 @@ class DownloadHandler():
             self._wait_for_file_completion(file_path)
 
             # Process the file
-            sandboxed_file=self._process_executable(file_path)
+            sandboxed_file = self._process_executable(file_path)
             
             #To be implemented
             # ML classification model to determine if the file is benign or malicious
@@ -76,6 +77,13 @@ class DownloadHandler():
 
         logging.warning(f"Timeout waiting for file {file_path} to complete downloading")
         return False
+    
+    def _run_analysis(self, analysis_func, file_path, output_path):
+        """Helper function to run analysis in a thread."""
+        try:
+            analysis_func(file_path, output_path=output_path)
+        except Exception as e:
+            logging.error(f"Error in {analysis_func.__name__}: {str(e)}")
 
     def _process_executable(self, file_path):
         """Process the detected executable file."""
@@ -97,8 +105,23 @@ class DownloadHandler():
             static_report_path = os.path.join(result_dir, "static", "static_report.json")
             dynamic_report_path = os.path.join(result_dir, "dynamic", "dynamic_report.json")
             
-            run_static_analysis(sandboxed_file, output_path=static_report_path)
-            run_dynamic_analysis(sandboxed_file, output_path=dynamic_report_path)
+            # Create threads for parallel analysis
+            static_thread = threading.Thread(
+                target=self._run_analysis,
+                args=(run_static_analysis, sandboxed_file, static_report_path)
+            )
+            dynamic_thread = threading.Thread(
+                target=self._run_analysis,
+                args=(run_dynamic_analysis, sandboxed_file, dynamic_report_path)
+            )
+            
+            # Start both analyses in parallel
+            static_thread.start()
+            dynamic_thread.start()
+            
+            # Wait for both analyses to complete
+            static_thread.join()
+            dynamic_thread.join()
                                     
             # optimized_features  p=rocess_reports(static_report,dynamic_report)
             # Read the JSON files
